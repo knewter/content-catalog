@@ -4,6 +4,7 @@ import Html.App as App
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import About
+import Topic
 import Route
 import Navigation
 
@@ -49,7 +50,7 @@ view model =
                     About.view
 
                 Just (Route.Topics) ->
-                    text "Topics view goes here"
+                    Topic.view
 
                 Nothing ->
                     text "Not found!"
