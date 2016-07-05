@@ -62,12 +62,26 @@ view model =
 
 navigationView : Model -> Html Msg
 navigationView model =
-    nav []
-        [ ul []
-            [ li [] [ a [ href "#" ] [ text "Home" ] ]
-            , li [] [ a [ href "#" ] [ text "Topics" ] ]
+    let
+        linkListItem linkData =
+            li [] [ link linkData ]
+    in
+        nav []
+            [ ul []
+                (List.map linkListItem links)
             ]
-        ]
+
+
+link : (Route.Location, String) -> Html Msg
+link (loc, label) =
+    a [ href <| Route.urlFor loc ] [ text label ]
+
+
+links : List (Route.Location, String)
+links =
+  [ (Route.Home, "Home")
+  , (Route.Topics, "Topics")
+  ]
 
 
 main : Program Never

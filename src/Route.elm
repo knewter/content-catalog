@@ -18,6 +18,18 @@ init location =
     location
 
 
+urlFor : Location -> String
+urlFor loc =
+  let
+      url =
+          case loc of
+            Home ->
+              "/"
+            Topics ->
+              "/topics"
+  in
+      "#" ++ url
+
 locFor : Navigation.Location -> Maybe Location
 locFor path =
     let
