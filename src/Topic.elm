@@ -1,7 +1,7 @@
 module Topic exposing (..)
 
 import Html exposing (..)
-import Route exposing (link)
+import Route exposing (link, Location(Topic))
 import Data exposing (Topic)
 
 
@@ -47,13 +47,10 @@ view model =
         (List.map topicListItemView model.topics)
 
 
-viewTopic : Model -> Html msg
-viewTopic model =
-    case model.currentSlug of
-        Nothing ->
-            text "Nothing to see here"
-
-        Just slug ->
+viewTopic : Route.Location -> Model -> Html msg
+viewTopic loc model =
+    case loc of
+        Route.Topic slug ->
             let
                 currentTopic =
                     List.filter (\t -> t.slug == slug) model.topics
@@ -65,6 +62,9 @@ viewTopic model =
 
                     Just topic ->
                         text ("This is the " ++ topic.slug ++ " topic")
+
+        _ ->
+            text "this shouldn't happen"
 
 
 topicListItemView : Topic -> Html msg

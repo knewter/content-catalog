@@ -60,7 +60,7 @@ view model =
                     App.map TopicMsg <| Topic.view model.topic
 
                 Just (Route.Topic someTopic) ->
-                    App.map TopicMsg <| Topic.viewTopic model.topic
+                    App.map TopicMsg <| Topic.viewTopic (Route.Topic someTopic) model.topic
 
                 Nothing ->
                     text "Not found!"
