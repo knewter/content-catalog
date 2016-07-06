@@ -6,6 +6,8 @@ import Html.Attributes exposing (..)
 import About
 import Route
 import Navigation
+import Topic
+import Helpers exposing (link)
 
 
 type alias Model =
@@ -49,7 +51,10 @@ view model =
                     About.view
 
                 Just (Route.Topics) ->
-                    text "Topics view goes here"
+                    Topic.view Topic.fakeTopics
+
+                Just (Route.Topic slug) ->
+                    Topic.viewTopic slug Topic.fakeTopics
 
                 Nothing ->
                     text "Not found!"
@@ -72,16 +77,11 @@ navigationView model =
             ]
 
 
-link : (Route.Location, String) -> Html Msg
-link (loc, label) =
-    a [ href <| Route.urlFor loc ] [ text label ]
-
-
-links : List (Route.Location, String)
+links : List ( Route.Location, String )
 links =
-  [ (Route.Home, "Home")
-  , (Route.Topics, "Topics")
-  ]
+    [ ( Route.Home, "Home" )
+    , ( Route.Topics, "Topics" )
+    ]
 
 
 main : Program Never

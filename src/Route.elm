@@ -7,6 +7,7 @@ import Navigation
 type Location
     = Home
     | Topics
+    | Topic String
 
 
 type alias Model =
@@ -20,15 +21,20 @@ init location =
 
 urlFor : Location -> String
 urlFor loc =
-  let
-      url =
-          case loc of
-            Home ->
-              "/"
-            Topics ->
-              "/topics"
-  in
-      "#" ++ url
+    let
+        url =
+            case loc of
+                Home ->
+                    "/"
+
+                Topics ->
+                    "/topics"
+
+                Topic slug ->
+                    "/topics/" ++ slug
+    in
+        "#" ++ url
+
 
 locFor : Navigation.Location -> Maybe Location
 locFor path =
@@ -44,6 +50,9 @@ locFor path =
 
             [ "topics" ] ->
                 Just Topics
+
+            [ "topics", slug ] ->
+                Just (Topic slug)
 
             _ ->
                 Nothing
