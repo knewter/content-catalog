@@ -20,13 +20,10 @@ type alias Model =
 init : Maybe Route.Location -> ( Model, Cmd Msg )
 init location =
     let
-        route =
-            Route.init location
-
         ( topicModel, topicCmd ) =
             Topic.init
     in
-        { route = route
+        { route = Route.init location
         , topic = topicModel
         }
             ! [ Cmd.map TopicMsg topicCmd ]
@@ -41,8 +38,7 @@ update msg model =
         TopicMsg topicMsg ->
             let
                 ( topicModel, topicCmd ) =
-                    model.topic
-                        |> Topic.update topicMsg
+                    Topic.update topicMsg model.topic
             in
                 { model | topic = topicModel } ! [ Cmd.map TopicMsg topicCmd ]
 
