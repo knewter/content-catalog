@@ -4,18 +4,17 @@ import Html.App as App
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import About
-import Topic
-import Route
+import Msg exposing (Msg(..))
+import Route exposing (link)
 import Navigation
+import Data
+import Topic
 
 
 type alias Model =
     { route : Route.Model
+    , topic : Topic.Model
     }
-
-
-type Msg
-    = NoOp
 
 
 init : Maybe Route.Location -> ( Model, Cmd Msg )
@@ -23,10 +22,14 @@ init location =
     let
         route =
             Route.init location
+
+        ( topicModel, topicCmd ) =
+            Topic.init
     in
         { route = route
+        , topic = topicModel
         }
-            ! []
+            ! [ Cmd.map TopicMsg topicCmd ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -34,6 +37,14 @@ update msg model =
     case msg of
         NoOp ->
             model ! []
+
+        TopicMsg topicMsg ->
+            let
+                ( topicModel, topicCmd ) =
+                    model.topic
+                        |> Topic.update topicMsg
+            in
+                { model | topic = topicModel } ! [ Cmd.map TopicMsg topicCmd ]
 
 
 subscriptions : Model -> Sub Msg
@@ -50,7 +61,10 @@ view model =
                     About.view
 
                 Just (Route.Topics) ->
-                    Topic.view
+                    App.map TopicMsg <| Topic.view model.topic
+
+                Just (Route.Topic someTopic) ->
+                    App.map TopicMsg <| Topic.viewTopic model.topic
 
                 Nothing ->
                     text "Not found!"
@@ -73,16 +87,11 @@ navigationView model =
             ]
 
 
-link : (Route.Location, String) -> Html Msg
-link (loc, label) =
-    a [ href <| Route.urlFor loc ] [ text label ]
-
-
-links : List (Route.Location, String)
+links : List ( Route.Location, String )
 links =
-  [ (Route.Home, "Home")
-  , (Route.Topics, "Topics")
-  ]
+    [ ( Route.Home, "Home" )
+    , ( Route.Topics, "Topics" )
+    ]
 
 
 main : Program Never
@@ -98,4 +107,21 @@ main =
 
 updateRoute : Maybe Route.Location -> Model -> ( Model, Cmd Msg )
 updateRoute route model =
-    { model | route = route } ! []
+    case route of
+        Nothing ->
+            { model | route = route } ! []
+
+        Just (Route.Home) ->
+            { model | route = route } ! []
+
+        Just (Route.Topics) ->
+            { model | route = route } ! []
+
+        Just (Route.Topic topicSlug) ->
+            let
+                ( topicModel, topicCmd ) =
+                    model.topic
+                        |> Topic.update (Topic.SetSlug topicSlug)
+            in
+                { model | topic = topicModel, route = route }
+                    ! [ Cmd.map TopicMsg topicCmd ]
