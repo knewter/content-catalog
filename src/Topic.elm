@@ -47,24 +47,19 @@ view model =
         (List.map topicListItemView model.topics)
 
 
-viewTopic : Route.Location -> Model -> Html msg
-viewTopic loc model =
-    case loc of
-        Route.Topic slug ->
-            let
-                currentTopic =
-                    List.filter (\t -> t.slug == slug) model.topics
-                        |> List.head
-            in
-                case currentTopic of
-                    Nothing ->
-                        text "Nothing to see here"
+viewTopic : Slug -> Model -> Html msg
+viewTopic slug model =
+    let
+        currentTopic =
+            List.filter (\t -> t.slug == slug) model.topics
+                |> List.head
+    in
+        case currentTopic of
+            Nothing ->
+                text "Nothing to see here"
 
-                    Just topic ->
-                        text ("This is the " ++ topic.slug ++ " topic")
-
-        _ ->
-            text "this shouldn't happen"
+            Just topic ->
+                text ("This is the " ++ topic.slug ++ " topic")
 
 
 topicListItemView : Topic -> Html msg
