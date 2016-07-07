@@ -18,6 +18,11 @@ view topics =
         (List.map topicListItemView topics)
 
 
+topicListItemView : Topic -> Html msg
+topicListItemView topic =
+    li [] [ link ( Route.Topic topic.slug, topic.title ) ]
+
+
 viewTopic : String -> List Topic -> Html msg
 viewTopic slug topics =
     let
@@ -31,11 +36,6 @@ viewTopic slug topics =
 
             Just topic ->
                 text ("This is the " ++ topic.slug ++ " topic")
-
-
-topicListItemView : Topic -> Html msg
-topicListItemView topic =
-    li [] [ link ( Route.Topic topic.slug, topic.title ) ]
 
 
 fakeTopics : List Topic
