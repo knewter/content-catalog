@@ -20,7 +20,7 @@ view topics =
 
 topicListItemView : Topic -> Html msg
 topicListItemView topic =
-    li [] [ link ( Route.Topic topic.slug, topic.title ) ]
+    li [] [ link False ( Route.Topic topic.slug, topic.title ) ]
 
 
 viewTopic : String -> List Topic -> Html msg

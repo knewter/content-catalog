@@ -7,7 +7,7 @@ import About
 import Route
 import Navigation
 import Topic
-import Helpers exposing (link)
+import Helpers
 
 
 type alias Model =
@@ -60,7 +60,8 @@ view model =
                     text "Not found!"
     in
         div []
-            [ navigationView model
+            [ node "style" [ type' "text/css" ] [ text styles ]
+            , navigationView model
             , body
             ]
 
@@ -69,7 +70,7 @@ navigationView : Model -> Html Msg
 navigationView model =
     let
         linkListItem linkData =
-            li [] [ link linkData ]
+            li [] [ link model.route linkData ]
     in
         nav []
             [ ul []
@@ -98,3 +99,30 @@ main =
 updateRoute : Maybe Route.Location -> Model -> ( Model, Cmd Msg )
 updateRoute route model =
     { model | route = route } ! []
+
+
+styles : String
+styles =
+    "a.active { font-weight: bold; }"
+
+
+link : Maybe Route.Location -> ( Route.Location, String ) -> Html msg
+link currentRoute linkData =
+    let
+        ( loc, _ ) =
+            linkData
+
+        isActive =
+            case currentRoute of
+                Nothing ->
+                    False
+
+                Just route ->
+                    case route of
+                        Route.Topic _ ->
+                            loc == Route.Topics || loc == route
+
+                        _ ->
+                            route == loc
+    in
+        Helpers.link isActive linkData
