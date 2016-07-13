@@ -13,6 +13,8 @@ import Helpers
 -- We'll import the Css module and expose everything
 
 import Css exposing (..)
+import Css.Namespace exposing (namespace)
+import Css.Elements
 
 
 -- We will also import Html.CssHelpers, exposing the `withNamespace` function
@@ -59,8 +61,11 @@ subscriptions _ =
 view : Model -> Html Msg
 view model =
     let
-        -- compiled =
-        --     compile css
+        -- First, we'll compile our stylesheet to produce the string of css we want to
+        -- add to the browser.
+        compiled =
+            compile css
+
         body =
             case model.route of
                 Just (Route.Home) ->
@@ -77,29 +82,30 @@ view model =
     in
         div []
             [ node "style" [ type' "text/css" ] [ text styles ]
-              --, node "style" [ type' "text/css" ] [ text compiled.css ]
+              -- Then we'll add a style node that contains that string
+            , node "style" [ type' "text/css" ] [ text compiled.css ]
             , navigationView model
             , body
             ]
 
 
-navbarNamespace : Html.CssHelpers.Namespace name class id msg
+navbarNamespace : Html.CssHelpers.Namespace String class id msg
 navbarNamespace =
     withNamespace "navbar"
 
 
 css : Css.Stylesheet
 css =
-    -- We'll start out by producing a stylesheet.  The stylesheet function takes a
-    -- list of snippets.  By default it won't namespace them.  We'll apply our
-    -- namespace function, which takes a namespace string and a list of snippets
-    -- and produces a list of snippets, namespaced.
     (stylesheet << namespace navbarNamespace.name)
-        -- then we give the argument to this function composition, which is a list of
-        -- snippets.
         [ (#) Navbar
-            [ padding (em 1)
-            , backgroundColor (rgb 30 30 30)
+            [ padding (Css.em 1)
+            , backgroundColor (rgb 230 230 230)
+            , descendants
+                [ Css.Elements.li
+                    [ display inlineBlock
+                    , marginRight (Css.em 1)
+                    ]
+                ]
             ]
         ]
 
