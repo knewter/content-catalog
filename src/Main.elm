@@ -10,6 +10,20 @@ import Topic
 import Helpers
 
 
+-- We'll import the Css module and expose everything
+
+import Css exposing (..)
+
+
+-- We will also import Html.CssHelpers, exposing the `withNamespace` function
+
+import Html.CssHelpers exposing (withNamespace)
+
+
+type CssClasses
+    = Navbar
+
+
 type alias Model =
     { route : Route.Model
     }
@@ -45,6 +59,8 @@ subscriptions _ =
 view : Model -> Html Msg
 view model =
     let
+        -- compiled =
+        --     compile css
         body =
             case model.route of
                 Just (Route.Home) ->
@@ -61,18 +77,43 @@ view model =
     in
         div []
             [ node "style" [ type' "text/css" ] [ text styles ]
+              --, node "style" [ type' "text/css" ] [ text compiled.css ]
             , navigationView model
             , body
             ]
 
 
+navbarNamespace : Html.CssHelpers.Namespace name class id msg
+navbarNamespace =
+    withNamespace "navbar"
+
+
+css : Css.Stylesheet
+css =
+    -- We'll start out by producing a stylesheet.  The stylesheet function takes a
+    -- list of snippets.  By default it won't namespace them.  We'll apply our
+    -- namespace function, which takes a namespace string and a list of snippets
+    -- and produces a list of snippets, namespaced.
+    (stylesheet << namespace navbarNamespace.name)
+        -- then we give the argument to this function composition, which is a list of
+        -- snippets.
+        [ (#) Navbar
+            [ padding (em 1)
+            , backgroundColor (rgb 30 30 30)
+            ]
+        ]
+
+
 navigationView : Model -> Html Msg
 navigationView model =
     let
+        { id } =
+            navbarNamespace
+
         linkListItem linkData =
             li [] [ link model.route linkData ]
     in
-        nav []
+        nav [ id Navbar ]
             [ ul []
                 (List.map linkListItem links)
             ]
