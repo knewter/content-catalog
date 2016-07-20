@@ -51,6 +51,9 @@ view model =
         compiled =
             Styles.compile Styles.css
 
+        { class } =
+            Styles.navbarNamespace
+
         body =
             case model.route of
                 Just (Route.Home) ->
@@ -68,7 +71,7 @@ view model =
         div []
             [ node "style" [ type' "text/css" ] [ text compiled.css ]
             , navigationView model
-            , body
+            , div [ class [ Styles.Container ] ] [ body ]
             ]
 
 

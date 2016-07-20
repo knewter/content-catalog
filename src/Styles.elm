@@ -13,6 +13,8 @@ type CssIds
 
 type CssClasses
     = Active
+    | Container
+    | CardList
 
 
 compile =
@@ -27,8 +29,12 @@ navbarNamespace =
 css : Css.Stylesheet
 css =
     (stylesheet << namespace navbarNamespace.name)
-        [ (#) Navbar
+        [ Css.Elements.body
+            [ fontFamily sansSerif
+            ]
+        , (#) Navbar
             [ backgroundColor V.primaryColor
+            , property "box-shadow" "0 0 4px rgba(0, 0, 0, 0.5)"
             , descendants
                 [ Css.Elements.ul
                     [ margin (Css.px 0)
@@ -47,6 +53,31 @@ css =
                             , (withClass Active)
                                 [ fontWeight bold
                                 , backgroundColor (rgba 0 0 0 0.3)
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        , (.) Container
+            [ V.defaultPadding
+            ]
+        , (.) CardList
+            [ margin zero
+            , padding zero
+            , children
+                [ Css.Elements.li
+                    [ display inlineBlock
+                    , property "list-style-type" "none"
+                    , backgroundColor V.primaryColor
+                    , children
+                        [ Css.Elements.a
+                            [ display inlineBlock
+                            , V.defaultPadding
+                            , color <| rgb 255 255 255
+                            , textDecoration none
+                            , hover
+                                [ backgroundColor (rgba 0 0 0 0.1)
                                 ]
                             ]
                         ]

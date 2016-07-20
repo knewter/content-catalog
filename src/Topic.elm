@@ -3,6 +3,7 @@ module Topic exposing (..)
 import Html exposing (..)
 import Helpers exposing (link)
 import Route
+import Styles
 
 
 type alias Topic =
@@ -14,8 +15,12 @@ type alias Topic =
 
 view : List Topic -> Html msg
 view topics =
-    ul []
-        (List.map topicListItemView topics)
+    let
+        { class } =
+            Styles.navbarNamespace
+    in
+        ul [ class [ Styles.CardList ] ]
+            (List.map topicListItemView topics)
 
 
 topicListItemView : Topic -> Html msg
